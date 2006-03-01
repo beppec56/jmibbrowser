@@ -1,0 +1,17 @@
+
+-- This file contains the MIB records of nodes above mib-II.
+-- Dwipal
+
+ccitt            OBJECT IDENTIFIER ::= { root 0 }
+iso                              OBJECT IDENTIFIER ::= { root 1 }
+joint-ccitt-iso  OBJECT IDENTIFIER ::= { root 2 }
+
+standard                OBJECT IDENTIFIER ::= { iso 0 }
+registration-authority  OBJECT IDENTIFIER ::= { iso 1 }
+member-body             OBJECT IDENTIFIER ::= { iso 2 }
+identified-organization OBJECT IDENTIFIER ::= { iso 3 }
+
+dod       OBJECT IDENTIFIER ::= { identified-organization 6 }
+internet  OBJECT IDENTIFIER ::= { dod 1 }
+mgmt    OBJECT IDENTIFIER ::= { internet 2 }
+ 

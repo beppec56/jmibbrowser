@@ -1,0 +1,280 @@
+-- "06/30/99 @(#)mib_core.txt	4.1 99/06/30"
+--
+--
+-- Copyright 1999 Sun Microsystems, Inc. All rights reserved.
+-- This software is the proprietary information of Sun Microsystems, Inc.
+-- Use is subject to license terms.
+-- 
+-- Copyright 1999 Sun Microsystems, Inc. Tous droits réservés.
+-- Ce logiciel est proprieté de Sun Microsystems, Inc.
+-- Distribué par des licences qui en restreignent l'utilisation. 
+--
+--
+-- The file contains all the definitions scattered around many different
+-- RFCs. 
+--
+
+	  CORE-MIB DEFINITIONS ::= BEGIN
+
+
+	  IMPORTS ;
+
+
+--------------
+-- from SMI --
+--------------
+
+	  -- the path to the root
+
+	  internet       OBJECT IDENTIFIER ::= { dod 1 }
+
+	  directory      OBJECT IDENTIFIER ::= { internet 1 }
+
+	  mgmt           OBJECT IDENTIFIER ::= { internet 2 }
+
+	  experimental   OBJECT IDENTIFIER ::= { internet 3 }
+
+	  private        OBJECT IDENTIFIER ::= { internet 4 }
+	  enterprises    OBJECT IDENTIFIER ::= { private 1 }
+
+	  security       OBJECT IDENTIFIER ::= { internet 5 }
+
+	  snmpV2         OBJECT IDENTIFIER ::= { internet 6 }
+
+	  -- transport domains
+	  snmpDomains    OBJECT IDENTIFIER ::= { snmpV2 1 }
+
+	  -- transport proxies
+	  snmpProxys     OBJECT IDENTIFIER ::= { snmpV2 2 }
+
+	  -- module identities
+	  snmpModules    OBJECT IDENTIFIER ::= { snmpV2 3 }
+
+
+-----------------
+-- from MIB-II --
+-----------------
+
+
+	  mib-2      OBJECT IDENTIFIER ::= { mgmt 1 }
+
+
+-------------------
+-- from RFC 1271 --
+-------------------
+
+	      EntryStatus ::= INTEGER
+			 { valid(1),
+			   createRequest(2),
+			   underCreation(3),
+			   invalid(4)
+			 }
+ 
+	      -- The status of a table entry.
+	      --
+	      -- Setting this object to the value invalid(4) has the
+	      -- effect of invalidating the corresponding entry.
+	      -- That is, it effectively disassociates the mapping
+	      -- identified with said entry.
+	      -- It is an implementation-specific matter as to whether
+	      -- the agent removes an invalidated entry from the table.
+	      -- Accordingly, management stations must be prepared to
+	      -- receive tabular information from agents that corresponds
+	      -- to entries currently not in use.  Proper
+	      -- interpretation of such entries requires examination
+	      -- of the relevant EntryStatus object.
+	      --
+	      -- An existing instance of this object cannot be set to
+	      -- createRequest(2).  This object may only be set to
+	      -- createRequest(2) when this instance is created.  When
+	      -- this object is created, the agent may wish to create
+	      -- supplemental object instances to complete a conceptual
+	      -- row in this table.  Immediately after completing the
+	      -- create operation, the agent must set this object to
+	      -- underCreation(3).
+	      --
+	      -- Entries shall exist in the underCreation(3) state until
+	      -- the management station is finished configuring the
+	      -- entry and sets this object to valid(1) or aborts,
+	      -- setting this object to invalid(4).  If the agent
+	      -- determines that an entry has been in the
+	      -- underCreation(3) state for an abnormally long time,
+	      -- it may decide that the management station has
+	      -- crashed.  If the agent makes this decision,
+	      -- it may set this object to invalid(4) to reclaim the
+	      -- entry.  A prudent agent will understand that the
+	      -- management station may need to wait for human input
+	      -- and will allow for that possibility in its
+	      -- determination of this abnormally long period.
+
+
+-------------------
+-- from RFC 1316 --
+-------------------
+
+
+-------------------
+-- from RFC 1443 --
+-------------------
+
+
+------------------------
+-- from RFC 1065/1442 --
+------------------------
+
+	Gauge32 ::= Gauge
+
+	Counter32 ::= Counter
+
+	Integer32 ::= INTEGER
+
+     -- application-wide types
+
+      NetworkAddress ::=
+	  CHOICE {
+	      internet
+		  IpAddress
+	  }
+ 
+      IpAddress ::=
+	  [APPLICATION 0]          -- in network-byte order
+	      IMPLICIT OCTET STRING (SIZE (4))
+ 
+      Counter ::=
+	  [APPLICATION 1]
+	      IMPLICIT INTEGER (0..4294967295)
+ 
+      Counter64 ::=
+	  [APPLICATION 1]
+	      IMPLICIT INTEGER (0..18446744073709551615)
+
+      Gauge ::=
+	  [APPLICATION 2]
+	      IMPLICIT INTEGER (0..4294967295)
+ 
+      Unsigned32 ::=
+	  [APPLICATION 2]
+	      IMPLICIT INTEGER (0..4294967295)
+
+      TimeTicks ::=
+	  [APPLICATION 3]
+	      IMPLICIT INTEGER (0..4294967295)
+ 
+      Opaque ::=
+	  [APPLICATION 4]          -- arbitrary ASN.1 value,
+	      IMPLICIT OCTET STRING   --   "double-wrapped"
+
+
+
+---------------------------------------------------
+-- from RFC 1903: Textual Conventions for SNMPv2 --
+---------------------------------------------------
+
+DisplayString ::=   OCTET STRING (SIZE (0..255))
+
+
+PhysAddress ::=  OCTET STRING
+
+
+MacAddress ::=   OCTET STRING (SIZE (6))
+
+
+TruthValue ::=   INTEGER { true(1), false(2) }
+
+TestAndIncr ::=INTEGER (0..2147483647)
+
+
+AutonomousType ::=    OBJECT IDENTIFIER
+
+
+InstancePointer ::=   OBJECT IDENTIFIER
+
+
+VariablePointer ::=   OBJECT IDENTIFIER
+
+
+RowPointer ::=   OBJECT IDENTIFIER
+
+
+RowStatus ::=    INTEGER {
+		     -- the following two values are states:
+		     -- these values may be read or written
+		     active(1),
+		     notInService(2),
+
+		     -- the following value is a state:
+		     -- this value may be read, but not written
+		     notReady(3),
+
+		     -- the following three values are
+		     -- actions: these values may be written,
+		     --   but are never read
+		     createAndGo(4),
+		     createAndWait(5),
+		     destroy(6)
+		 }
+
+
+TimeStamp ::=  TimeTicks
+
+TimeInterval ::=  INTEGER (0..2147483647)
+
+
+DateAndTime ::=  OCTET STRING (SIZE (8 | 11))
+
+
+StorageType ::= INTEGER {
+		     other(1),       -- eh?
+		     volatile(2),    -- e.g., in RAM
+		     nonVolatile(3), -- e.g., in NVRAM
+		     permanent(4),   -- e.g., partially in ROM
+		     readOnly(5)     -- e.g., completely in ROM
+		 }
+
+
+TDomain ::=  OBJECT IDENTIFIER
+
+
+TAddress ::=   OCTET STRING (SIZE (1..255))
+
+
+
+
+
+-----------------
+-- entreprises --
+-----------------
+
+	sun             OBJECT IDENTIFIER ::= { enterprises 42 }
+	messaging       OBJECT IDENTIFIER ::= { sun products(2) 8 }
+
+	agents          OBJECT IDENTIFIER ::= { messaging 1 }
+	private-mibs    OBJECT IDENTIFIER ::= { messaging 2 }
+
+	snmpx400d       OBJECT IDENTIFIER ::= { agents 1 }
+	snmpxapiad      OBJECT IDENTIFIER ::= { agents 2 }
+	snmpx500d       OBJECT IDENTIFIER ::= { agents 3 }
+	snmpimd         OBJECT IDENTIFIER ::= { agents 4 }
+	snmpslapd       OBJECT IDENTIFIER ::= { agents 5 }
+
+	cisco             OBJECT IDENTIFIER ::= { enterprises 9 }
+
+
+	ciscoProducts	  OBJECT IDENTIFIER ::= { cisco 1 } 
+	local             OBJECT IDENTIFIER ::= { cisco 2 } 
+	temporary         OBJECT IDENTIFIER ::= { cisco 3 } 
+	pakmon	          OBJECT IDENTIFIER ::= { cisco 4 } 
+	workgroup	  OBJECT IDENTIFIER ::= { cisco 5 } 
+	otherEnterprises	OBJECT IDENTIFIER ::= { cisco 6 } 
+	ciscoAgentCapability	OBJECT IDENTIFIER ::= { cisco 7 } 
+	ciscoConfig		OBJECT IDENTIFIER ::= { cisco 8 } 
+	ciscoMgmt         OBJECT IDENTIFIER ::= { cisco 9 } 
+	ciscoExperiment   OBJECT IDENTIFIER ::= { cisco 10 } 
+	ciscoAdmin		OBJECT IDENTIFIER ::= { cisco 11 } 
+	ciscoModules		OBJECT IDENTIFIER ::= { cisco 12 } 
+	lightstream		OBJECT IDENTIFIER ::= { cisco 13 } 
+
+
+
+END
+
