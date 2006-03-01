@@ -4,7 +4,8 @@
     <property name="bin" location="classes"/>
     <property name="lib" location="lib"/>
     <property name="dist" location="dist"/>
-    <property name="jarfile" location="${dist}/${ant.project.name}.jar"/>
+    <property name="package_dir" location="${dist}/package"/>
+    <property name="jarfile" location="${dist}/jmibbrowser.jar"/>
     <property name="compile.debug" value="true"/>
 
     <fileset id="lib.jars" dir="${lib}">
@@ -47,5 +48,31 @@
     <target name="clean" description="Remove build and dist directories">
         <delete dir="${bin}"/>
         <delete dir="${dist}"/>
+        <delete file="jmibbrowser.zip"/>
+        <delete file="mibbrowser.log"/>
     </target>
+
+	<target name="package" depends="jar" description="Make distribution package.">
+		<mkdir dir="${package_dir}"/>
+		<mkdir dir="${package_dir}/mibs"/>
+
+		<copy file="${dist}/jmibbrowser.jar" todir="${package_dir}"/>
+		<copy file="mib.bat" todir="${package_dir}"/>
+		<copy file="mib.sh" todir="${package_dir}"/>
+		<copy file="README.txt" todir="${package_dir}"/>
+		<copy file="License.txt" todir="${package_dir}"/>
+		<copy todir="${package_dir}">
+			<fileset dir="${lib}">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${package_dir}/mibs">
+			<fileset dir="mibs"/>
+		</copy>
+		
+
+
+		<zip destfile="jmibbrowser.zip" basedir="${package_dir}" update="true"/>
+	</target>
+
 </project>

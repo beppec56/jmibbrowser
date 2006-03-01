@@ -1,0 +1,4 @@
+#!/bin/sh
+export EDITOR='vi'
+svn stat | grep "^[MAD]" | awk '{print $NF}' > ci_set.txt; vi ci_set.txt; svn diff $(cat ci_set.txt) | less; svn ci $(cat ci_set.txt); mv ci_set.txt  /tmp
+

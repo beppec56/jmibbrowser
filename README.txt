@@ -8,7 +8,7 @@ Author: Dwipal Desai (mibbrowser@dwipal.com)
 How to Run:
 ----------
 
-Step 1: Make sure that you have JDK1.3 or later installed 
+Step 1: Make sure that you have JDK1.5 or later installed 
 	on your machine and the BIN directory is in the 
 	system path. (You should be able to run "java" 
 	from command line).

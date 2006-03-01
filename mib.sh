@@ -1,1 +1,1 @@
-java -classpath "./lib/SNMP4J.jar:./dist/JMibBrowser.jar:./lib/log4j.jar" com.dwipal.DwSnmpMibTreeGUI
+java -classpath "SNMP4J.jar:JMibBrowser.jar:log4j.jar" com.dwipal.DwSnmpMibTreeGUI

@@ -1,1 +1,1 @@
-java -classpath ".\lib\SNMP4J.jar;.\dist\JMibBrowser.jar;.\lib\log4j.jar" DwSnmpMibBrowser.DwSnmpMibTreeBean -Dlogfilename="snmpbrowser.log" -Dlogrefreshtime="2" 
+java -classpath "SNMP4J.jar;jmibbrowser.jar;log4j.jar" com.dwipal.DwSnmpMibTreeGUI -Dlogfilename="snmpbrowser.log" -Dlogrefreshtime="2" 
