@@ -1,4 +1,4 @@
-SNMP MIB Browser V1.0
+SNMP MIB Browser V1.1
 ---------------------
 
 Please read License.txt before using this utility.
