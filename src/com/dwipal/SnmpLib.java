@@ -55,11 +55,11 @@ public class SnmpLib implements ISnmpLib {
   public void destroySession() {
     m_sessionDestroyed=true;
   }
-  private Target getTarget() {
+  private Target getTarget(String strCommunity) {
     if(m_target==null) {
       Address addr = GenericAddress.parse("udp:" + getHost() + "/" + getPort());
       m_target = new CommunityTarget();
-      m_target.setCommunity(new OctetString("public"));
+      m_target.setCommunity(new OctetString(strCommunity));
       m_target.setAddress(addr);
       m_target.setVersion(SnmpConstants.version1);
       m_target.setRetries(3);
@@ -89,7 +89,7 @@ public class SnmpLib implements ISnmpLib {
       m_sessionDestroyed=false;
       do {
         requests++;
-        ResponseEvent responseEvent = snmp.send(request, getTarget());
+        ResponseEvent responseEvent = snmp.send(request, getTarget(getReadCommunity()));
         response = responseEvent.getResponse();
         if (response != null) {
           objects += response.size();
@@ -169,7 +169,7 @@ public class SnmpLib implements ISnmpLib {
     try {
       Snmp snmp = new Snmp(new DefaultUdpTransportMapping());
       snmp.listen();
-      ResponseEvent responseEvent = snmp.send(request, getTarget());
+      ResponseEvent responseEvent = snmp.send(request, getTarget(getWriteCommunity()));
       response = responseEvent.getResponse();
       System.out.println(response);
     }
