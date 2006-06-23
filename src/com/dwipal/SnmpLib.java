@@ -171,7 +171,7 @@ public class SnmpLib implements ISnmpLib {
       snmp.listen();
       ResponseEvent responseEvent = snmp.send(request, getTarget(getWriteCommunity()));
       response = responseEvent.getResponse();
-      System.out.println(response);
+      //System.out.println(response);
     }
     catch (Exception e) {
       e.printStackTrace();

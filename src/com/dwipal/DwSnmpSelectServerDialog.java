@@ -20,14 +20,21 @@ public class DwSnmpSelectServerDialog  {
 
 	public String[] show() {
 		db=new DwSnmpSelectServerDialogImpl();
+                db.setVisible(true);
 		return db.getUserData();
 	}
 
 	public String[] show(String ip,int port,String get,String set) {
 		db=new DwSnmpSelectServerDialogImpl(ip,port,get,set);
+                db.setVisible(true);
 		//System.out.println("Showing for " + ip);
 		return db.getUserData();
 	}
+
+        public String[] getSelectedConfig() {
+          db=new DwSnmpSelectServerDialogImpl();
+          return db.getSelectedConfig();
+        }
 
 	/*
 	public IPRecord getIPRec() {
@@ -54,9 +61,22 @@ implements ActionListener
 	String returnString[];
 	boolean flag;
 
-	public DwSnmpSelectServerDialogImpl() {
-		DwSnmpSelectServerDialogImplFunc("192.168.2.9",161,"public","private");
+        DwSettings m_settings;
 
+	public DwSnmpSelectServerDialogImpl() {
+          m_settings=new DwSettings();
+          if(m_settings.iprecord != null) {
+            DwSnmpSelectServerDialogImplFunc(m_settings.iprecord.ipAddress, m_settings.iprecord.port, m_settings.iprecord.getCommunity, m_settings.iprecord.setCommunity);
+          } else {
+            System.out.println("Loading default settings.");
+            m_settings.iprecord=new DwIPRecord();
+            m_settings.iprecord.ipAddress="127.0.0.1";
+            m_settings.iprecord.port=161;
+            m_settings.iprecord.getCommunity="public";
+            m_settings.iprecord.setCommunity="public";
+
+            DwSnmpSelectServerDialogImplFunc("127.0.0.1", 161, "public", "private");
+          }
 	}
 
 	public DwSnmpSelectServerDialogImpl(String ip,int port,String get,String set) {
@@ -106,7 +126,6 @@ implements ActionListener
 			this.setTitle("Please select a SNMP Server..");
 			this.setContentPane(ipPane);
 			this.setSize(250,170);
-			this.setVisible(true);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -117,11 +136,27 @@ implements ActionListener
 		return returnString;
 	}
 
+        public String[] getSelectedConfig() {
+          DwIPRecord ipr=m_settings.iprecord;
+          return new String[] { ipr.ipAddress, new Integer(ipr.port).toString(), ipr.getCommunity, ipr.setCommunity };
+        }
+
 	public void actionPerformed(ActionEvent evt)
 	{
 		Object source=evt.getSource();
 		if(source==ipButtonOK) {
-			returnString=new String[] { ipText1.getText(),ipText2.getText(),ipText3.getText(),ipText4.getText() };
+                  DwIPRecord ipr=m_settings.iprecord;
+                  ipr.ipAddress=ipText1.getText();
+                  ipr.port=Integer.parseInt(ipText2.getText());
+                  ipr.getCommunity=ipText3.getText();
+                  ipr.setCommunity=ipText4.getText();
+
+                  try {
+                    m_settings.saveProperties(ipr);
+                  } catch(Exception e) {
+                    System.out.println("Hmmm... cant save preferences." + e);
+                  }
+                  returnString=getSelectedConfig();
 		}
 		else returnString=null;
 		this.setVisible(false);

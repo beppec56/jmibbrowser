@@ -9,6 +9,7 @@ import javax.swing.event.*;
 import java.io.*;
 import java.util.*;
 
+
 public class DwSnmpMibTreeGUI
     implements ActionListener, MouseListener, TreeSelectionListener {
 
@@ -16,6 +17,7 @@ public class DwSnmpMibTreeGUI
   //DwSnmpOidSupport  oidSupport;
   DwSnmpMibBrowserFunctions snmp;
   DwSnmpMibOutputHandler output = new DwSnmpMibOutputHandler();
+  DwSnmpSelectServerDialog m_ipSrv=new DwSnmpSelectServerDialog();
 
   JTree myTree;
   JScrollPane treeScrollPane;
@@ -86,6 +88,7 @@ public class DwSnmpMibTreeGUI
     output.setOutputError(resultText);
     snmp = new DwSnmpMibBrowserFunctions();
     snmp.setOutput(output);
+    setIPConfig();
 
     selectedTreeOid = new JTextField("Your Selection");
 
@@ -181,6 +184,9 @@ public class DwSnmpMibTreeGUI
     // Finally create the Main Pane with the toolbar and content pane in it
     paneMain.add("Center", paneContent);
     paneMain.add("North", mainToolbar);
+
+    m_ipSrv = new DwSnmpSelectServerDialog();
+
 
     return paneMain;
   }
@@ -289,7 +295,7 @@ public class DwSnmpMibTreeGUI
       }
       else if (source == toolbarBtnAbout) {
         JOptionPane.showMessageDialog(paneMain,
-                                      "JMibBrowser version 1.1 Copyright (C) 2005 Dwipal Desai\n\n" +
+                                      "JMibBrowser version 1.11 Copyright (C) 2005 Dwipal Desai\n\n" +
                                       "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are\n" +
                                       "welcome to redistribute it under certain conditions. See License.txt for details.\n\n" +
                                       "This software uses snmp4j from http://www.snmp4j.org.\n\n" +
@@ -324,16 +330,16 @@ public class DwSnmpMibTreeGUI
   }
 
   void getNewIPInfo() {
-    DwSnmpSelectServerDialog ipSrv = new DwSnmpSelectServerDialog();
-
-    String ipInfo[] = ipSrv.show(snmp.getIP(), snmp.getPort(),
-                                 snmp.getReadCommunity(),
-                                 snmp.getWriteCommunity());
+    String ipInfo[] = m_ipSrv.show();
 
     if (ipInfo == null) {
       return;
     }
+    setIPConfig();
 
+  }
+  void setIPConfig() {
+    String ipInfo[] = m_ipSrv.getSelectedConfig();
     snmp.setIP(ipInfo[0]);
     snmp.setPort(Integer.parseInt(ipInfo[1]));
     snmp.setCommunity(ipInfo[2], ipInfo[3]);
